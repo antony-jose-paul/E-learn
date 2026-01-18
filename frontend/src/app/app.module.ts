@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'; // Add this import
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +16,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { MarkdownModule } from 'ngx-markdown';
 import { VideoToTextComponent } from './features/video-to-text/pages/video-to-text.component';
 import { ProfileComponent } from './features/profile/profile.component';
+import { TeacherUploadComponent } from './features/upload-video-for-teachers/pages/upload.component';
+import { VideoClassComponent } from './features/video-class/pages/video-class.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,8 @@ import { ProfileComponent } from './features/profile/profile.component';
     ChatbotComponent,
     VideoToTextComponent,
     ProfileComponent,
+    TeacherUploadComponent,
+    VideoClassComponent,
     MainLayoutComponent
   ],
   imports: [

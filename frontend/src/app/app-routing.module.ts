@@ -10,6 +10,8 @@ import { DiscussionfomrComponent } from './features/discussionforum/pages/discus
 import { ChatbotComponent } from './features/chatbot/pages/chatbot.component';
 import { VideoToTextComponent } from './features/video-to-text/pages/video-to-text.component';
 import { ProfileComponent } from './features/profile/profile.component';
+import { TeacherUploadComponent } from './features/upload-video-for-teachers/pages/upload.component';
+import { VideoClassComponent } from './features/video-class/pages/video-class.component';
 import { authGuard } from './core/guard/auth.guard';
 
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
@@ -32,6 +34,8 @@ const routes: Routes = [
       { path: 'discussion-forum', component: DiscussionfomrComponent },
       { path: 'video-to-text', component: VideoToTextComponent },
       { path: 'profile', component: ProfileComponent },
+      { path: 'video-upload', component: TeacherUploadComponent },
+      { path: 'video-class', component: VideoClassComponent },
     ]
   },
 

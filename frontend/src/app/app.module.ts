@@ -12,12 +12,13 @@ import { LeaderboardComponent } from './features/leaderboard/pages/leaderboard.c
 import { DiscussionfomrComponent } from './features/discussionforum/pages/discussionforum.component';
 import { ChatbotComponent } from './features/chatbot/pages/chatbot.component';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MarkdownModule } from 'ngx-markdown';
 import { VideoToTextComponent } from './features/video-to-text/pages/video-to-text.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { TeacherUploadComponent } from './features/upload-video-for-teachers/pages/upload.component';
 import { VideoClassComponent } from './features/video-class/pages/video-class.component';
+import { AuthHeaderInterceptor } from './core/interceptor/auth-header.interceptor';
 
 @NgModule({
   declarations: [
@@ -38,12 +39,16 @@ import { VideoClassComponent } from './features/video-class/pages/video-class.co
   imports: [
     BrowserModule,
     HttpClientModule,
-    FormsModule, // Add FormsModule here
+    FormsModule,
     RouterModule,
     AppRoutingModule,
     MarkdownModule.forRoot()
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthHeaderInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

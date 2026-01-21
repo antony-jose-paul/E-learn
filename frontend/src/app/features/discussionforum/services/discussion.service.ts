@@ -51,6 +51,10 @@ export class DiscussionService {
         return this.http.post(`${this.apiUrl}/create`, data);
     }
 
+    updateThread(threadId: string, data: { title: string, content: string }): Observable<any> {
+        return this.http.put(`${this.apiUrl}/${threadId}`, data);
+    }
+
     getReplies(threadId: string): Observable<Reply[]> {
         return this.http.get<Reply[]>(`${this.apiUrl}/${threadId}/replies`);
     }

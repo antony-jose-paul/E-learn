@@ -14,10 +14,18 @@ export class DiscussionfomrComponent implements OnInit {
   newThreadTitle: string = '';
   newThreadContent: string = '';
   newReplyContent: string = '';
+
+  isEditing: boolean = false;
+  editThreadTitle: string = '';
+  editThreadContent: string = '';
+
   showNewThreadForm: boolean = false;
   showThreadDetail: boolean = false;
   userName: string = '';
   userId: string = '';
+
+  currentUser: UserInfo | null = null;
+  isReviewer: boolean = false;
 
   constructor(private discussionService: DiscussionService, private authService: AuthService) { }
 
@@ -29,8 +37,10 @@ export class DiscussionfomrComponent implements OnInit {
   loadUserName(): void {
     this.authService.user$.subscribe(user => {
       if (user) {
+        this.currentUser = user;
         this.userName = user.name;
         this.userId = user.user_id;
+        this.isReviewer = user.role === 'reviewer';
       }
     });
   }
@@ -75,7 +85,48 @@ export class DiscussionfomrComponent implements OnInit {
   selectThread(thread: Thread): void {
     this.selectedThread = thread;
     this.showThreadDetail = true;
+    this.isEditing = false;
     this.loadReplies(thread.id);
+  }
+
+  toggleEdit(): void {
+    if (this.selectedThread) {
+      this.isEditing = !this.isEditing;
+      if (this.isEditing) {
+        this.editThreadTitle = this.selectedThread.title;
+        this.editThreadContent = this.selectedThread.content;
+      }
+    }
+  }
+
+  saveEdit(): void {
+    if (this.selectedThread && this.editThreadTitle.trim() && this.editThreadContent.trim()) {
+      const updateData = {
+        title: this.editThreadTitle,
+        content: this.editThreadContent
+      };
+
+      this.discussionService.updateThread(this.selectedThread.id, updateData).subscribe({
+        next: () => {
+          if (this.selectedThread) { // Check again to satisfy type safety
+            this.selectedThread.title = this.editThreadTitle;
+            this.selectedThread.content = this.editThreadContent;
+          }
+          this.isEditing = false;
+          // Optimistically update the thread in the list as well if needed
+          const threadIndex = this.threads.findIndex(t => t.id === this.selectedThread?.id);
+          if (threadIndex !== -1) {
+            this.threads[threadIndex].title = this.editThreadTitle;
+            this.threads[threadIndex].content = this.editThreadContent;
+          }
+          alert('Thread updated successfully!');
+        },
+        error: (error) => {
+          console.error('Error updating thread:', error);
+          alert('Failed to update thread.');
+        }
+      });
+    }
   }
 
   loadReplies(threadId: string): void {

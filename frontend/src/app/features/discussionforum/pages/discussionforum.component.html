@@ -63,7 +63,7 @@
             <span class="stat-number">{{ thread.views }}</span>
             <span class="stat-label">Views</span>
           </div>
-          <button class="btn-delete" *ngIf="thread.author === userName" (click)="deleteThread(thread.id)">
+          <button class="btn-delete" *ngIf="thread.author === userName || isReviewer" (click)="deleteThread(thread.id)">
             🗑️
           </button>
         </div>
@@ -79,8 +79,13 @@
     </button>
 
     <!-- Thread Content -->
-    <div class="thread-content-section">
-      <h2 class="thread-detail-title">{{ selectedThread.title }}</h2>
+    <div class="thread-content-section" *ngIf="!isEditing">
+      <div class="thread-header-row" style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <h2 class="thread-detail-title">{{ selectedThread.title }}</h2>
+        <button class="btn-edit" *ngIf="selectedThread.author === userName || isReviewer" (click)="toggleEdit()">
+          ✏️ Edit
+        </button>
+      </div>
       <div class="thread-author-info">
         <span class="author-name">👤 {{ selectedThread.author }}</span>
         <span class="author-date">📅 {{ selectedThread.createdAt | date:'medium' }}</span>
@@ -91,6 +96,23 @@
       <div class="thread-stats">
         <span class="stat">{{ selectedThread.replies }} Replies</span>
         <span class="stat">{{ selectedThread.views }} Views</span>
+      </div>
+    </div>
+
+    <!-- Edit Thread Form -->
+    <div class="edit-thread-form" *ngIf="isEditing">
+      <h3>Edit Thread</h3>
+      <div class="form-group">
+        <label for="editThreadTitle">Title</label>
+        <input id="editThreadTitle" type="text" [(ngModel)]="editThreadTitle" class="input-field">
+      </div>
+      <div class="form-group">
+        <label for="editThreadContent">Content</label>
+        <textarea id="editThreadContent" rows="5" [(ngModel)]="editThreadContent" class="textarea-field"></textarea>
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" (click)="saveEdit()">Save Changes</button>
+        <button class="btn-cancel" (click)="toggleEdit()">Cancel</button>
       </div>
     </div>
 
@@ -106,7 +128,8 @@
             <div class="reply-header">
               <h4 class="reply-author">{{ reply.author }}</h4>
               <span class="reply-date">{{ reply.createdAt | date:'short' }}</span>
-              <button class="btn-delete-small" *ngIf="reply.author === userName" (click)="deleteReply(reply.id)">
+              <button class="btn-delete-small" *ngIf="reply.author === userName || isReviewer"
+                (click)="deleteReply(reply.id)">
                 🗑️
               </button>
             </div>

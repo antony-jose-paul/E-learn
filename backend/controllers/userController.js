@@ -67,6 +67,31 @@ const createThread = async (req, res) => {
     }
 };
 
+const updateThread = async (req, res) => {
+    try {
+        const { threadId } = req.params;
+        const { title, content } = req.body;
+        const userId = req.user.user_id;
+        const userRole = req.user.role;
+
+        const thread = await Thread.findByPk(threadId);
+
+        if (!thread) {
+            return res.status(404).json({ message: "Thread not found" });
+        }
+
+        if (thread.author_id !== userId && userRole !== 'reviewer' && userRole !== 'admin') {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        await Thread.update({ title, content }, { where: { thread_id: threadId } });
+        res.status(200).json({ message: "Thread updated" });
+    } catch (error) {
+        console.error("Error updating thread:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
 const addReply = async (req, res) => {
     try {
         const { thread_id, content, author_id } = req.body;
@@ -118,6 +143,16 @@ const getReplies = async (req, res) => {
 const deleteThread = async (req, res) => {
     try {
         const { threadId } = req.params;
+        const userId = req.user.user_id;
+        const userRole = req.user.role;
+
+        const thread = await Thread.findByPk(threadId);
+        if (!thread) return res.status(404).json({ message: "Thread not found" });
+
+        if (thread.author_id !== userId && userRole !== 'reviewer' && userRole !== 'admin') {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
         await Thread.destroy({ where: { thread_id: threadId } });
         res.status(200).json({ message: "Thread deleted" });
     } catch (error) {
@@ -129,6 +164,16 @@ const deleteThread = async (req, res) => {
 const deleteReply = async (req, res) => {
     try {
         const { replyId } = req.params;
+        const userId = req.user.user_id;
+        const userRole = req.user.role;
+
+        const reply = await Reply.findByPk(replyId);
+        if (!reply) return res.status(404).json({ message: "Reply not found" });
+
+        if (reply.author_id !== userId && userRole !== 'reviewer' && userRole !== 'admin') {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
         await Reply.destroy({ where: { reply_id: replyId } });
         res.status(200).json({ message: "Reply deleted" });
     } catch (error) {
@@ -166,4 +211,4 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-export { flashCard, quizCard, discussionCard, createThread, addReply, getReplies, deleteThread, deleteReply, getUserProfile };
+export { flashCard, quizCard, discussionCard, createThread, updateThread, addReply, getReplies, deleteThread, deleteReply, getUserProfile };

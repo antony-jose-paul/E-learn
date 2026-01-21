@@ -40,8 +40,17 @@ export class MainLayoutComponent implements OnInit {
         ],
         profile: [
             { name: 'Profile', icon: '👤', route: '/profile' }
+        ],
+        teacher: [
+            { name: 'Upload Video', icon: '⬆️', route: '/video-upload' }
         ]
     };
+
+    filteredOverviewItems: MenuItem[] = [];
+    filteredLearnItems: MenuItem[] = [];
+    filteredPracticeItems: MenuItem[] = [];
+    filteredProfileItems: MenuItem[] = [];
+    filteredTeacherItems: MenuItem[] = [];
 
     constructor(
         private router: Router,
@@ -55,7 +64,42 @@ export class MainLayoutComponent implements OnInit {
 
         this.authService.user$.subscribe(user => {
             this.userDetails = user;
+            this.filterMenu();
         });
+    }
+
+    filterMenu(): void {
+        const isReviewer = this.authService.isReviewer();
+        const isTeacher = this.authService.isTeacher();
+        const isAdmin = this.authService.isAdmin();
+
+        if (isAdmin) {
+            // Admin sees everything
+            this.filteredOverviewItems = this.menuItems.overview;
+            this.filteredLearnItems = this.menuItems.learn;
+            this.filteredPracticeItems = this.menuItems.practice;
+            this.filteredProfileItems = this.menuItems.profile;
+            this.filteredTeacherItems = this.menuItems.teacher;
+        } else if (isReviewer) {
+            this.filteredOverviewItems = [];
+            this.filteredLearnItems = [];
+            this.filteredPracticeItems = this.menuItems.practice.filter(item => item.route === '/discussion-forum');
+            this.filteredProfileItems = this.menuItems.profile;
+            this.filteredTeacherItems = [];
+        } else if (isTeacher) {
+            this.filteredOverviewItems = []; // Or maybe dashboard? User didn't specify, safest to restrict as requested "only perform in their respective routes"
+            this.filteredLearnItems = this.menuItems.learn; // Teachers usually need to see materials/videos
+            this.filteredPracticeItems = this.menuItems.practice.filter(item => item.route === '/discussion-forum'); // Teachers might want to see discussions
+            this.filteredProfileItems = this.menuItems.profile;
+            this.filteredTeacherItems = this.menuItems.teacher;
+        } else {
+            // Student (Default)
+            this.filteredOverviewItems = this.menuItems.overview;
+            this.filteredLearnItems = this.menuItems.learn;
+            this.filteredPracticeItems = this.menuItems.practice;
+            this.filteredProfileItems = this.menuItems.profile;
+            this.filteredTeacherItems = [];
+        }
     }
 
     loadUserData(): void {

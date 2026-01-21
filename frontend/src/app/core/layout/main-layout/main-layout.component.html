@@ -8,10 +8,10 @@
             </button>
         </div>
 
-        <div class="menu-section">
+        <div class="menu-section" *ngIf="filteredOverviewItems.length > 0">
             <div class="menu-title">Overview</div>
             <ul class="menu-list">
-                <li *ngFor="let item of menuItems.overview" class="menu-item" [class.active]="isActive(item.route)"
+                <li *ngFor="let item of filteredOverviewItems" class="menu-item" [class.active]="isActive(item.route)"
                     [routerLink]="[item.route]">
                     <span class="menu-icon">{{ item.icon }}</span>
                     <span class="menu-text">{{ item.name }}</span>
@@ -19,10 +19,10 @@
             </ul>
         </div>
 
-        <div class="menu-section">
+        <div class="menu-section" *ngIf="filteredLearnItems.length > 0">
             <div class="menu-title">Learn</div>
             <ul class="menu-list">
-                <li *ngFor="let item of menuItems.learn" class="menu-item" [class.active]="isActive(item.route)"
+                <li *ngFor="let item of filteredLearnItems" class="menu-item" [class.active]="isActive(item.route)"
                     [routerLink]="[item.route]">
                     <span class="menu-icon">{{ item.icon }}</span>
                     <span class="menu-text">{{ item.name }}</span>
@@ -30,10 +30,10 @@
             </ul>
         </div>
 
-        <div class="menu-section">
+        <div class="menu-section" *ngIf="filteredPracticeItems.length > 0">
             <div class="menu-title">Practice</div>
             <ul class="menu-list">
-                <li *ngFor="let item of menuItems.practice" class="menu-item" [class.active]="isActive(item.route)"
+                <li *ngFor="let item of filteredPracticeItems" class="menu-item" [class.active]="isActive(item.route)"
                     [routerLink]="[item.route]">
                     <span class="menu-icon">{{ item.icon }}</span>
                     <span class="menu-text">{{ item.name }}</span>
@@ -41,10 +41,21 @@
             </ul>
         </div>
 
-        <div class="menu-section">
+        <div class="menu-section" *ngIf="filteredTeacherItems.length > 0">
+            <div class="menu-title">Teacher Area</div>
+            <ul class="menu-list">
+                <li *ngFor="let item of filteredTeacherItems" class="menu-item" [class.active]="isActive(item.route)"
+                    [routerLink]="[item.route]">
+                    <span class="menu-icon">{{ item.icon }}</span>
+                    <span class="menu-text">{{ item.name }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="menu-section" *ngIf="filteredProfileItems.length > 0">
             <div class="menu-title">Profile</div>
             <ul class="menu-list">
-                <li *ngFor="let item of menuItems.profile" class="menu-item" [class.active]="isActive(item.route)"
+                <li *ngFor="let item of filteredProfileItems" class="menu-item" [class.active]="isActive(item.route)"
                     [routerLink]="[item.route]">
                     <span class="menu-icon">{{ item.icon }}</span>
                     <span class="menu-text">{{ item.name }}</span>

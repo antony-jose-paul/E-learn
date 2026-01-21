@@ -18,10 +18,10 @@ export class AuthService {
 
   private userDetails = new BehaviorSubject<UserInfo | null>(null);
   user$ = this.userDetails.asObservable();
-  
+
   constructor() {
     const elearningUser = localStorage.getItem(this.storedUser);
-    
+
     if(elearningUser){
       this.userDetails.next(JSON.parse(elearningUser));
     }
@@ -55,5 +55,24 @@ export class AuthService {
   logout(): void{
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.storedUser);
+  }
+
+  getUser(): UserInfo | null {
+    return this.userDetails.getValue();
+  }
+
+  isReviewer(): boolean {
+    const user = this.getUser();
+    return user?.role === 'reviewer';
+  }
+
+  isAdmin(): boolean {
+    const user = this.getUser();
+    return user?.role === 'admin';
+  }
+
+  isTeacher(): boolean {
+    const user = this.getUser();
+    return user?.role === 'teacher';
   }
 }

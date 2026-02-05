@@ -15,12 +15,12 @@ router.get("/profile", verifyJWT, getUserProfile);
 
 // Discussion Forum Routes
 router.get("/discussion", discussionCard);
-router.post("/discussion/create", createThread);
-router.get("/discussion/:threadId/replies", getReplies);
+router.post("/discussion/create", verifyJWT, createThread);
+router.get("/discussion/:threadId/replies", verifyJWT, getReplies);
 router.put("/discussion/:threadId", verifyJWT, updateThread);
-router.post("/discussion/reply", addReply);
+router.post("/discussion/reply", verifyJWT, addReply);
 router.delete("/discussion/:threadId", verifyJWT, deleteThread);
-router.delete("/discussion/reply/:replyId", deleteReply);
+router.delete("/discussion/reply/:replyId", verifyJWT, deleteReply);
 
 router.get("/flashcards/decks", verifyJWT, getDecks);
 router.get("/flashcards/decks/:deckId/cards", verifyJWT, getDeckCards);

@@ -1,0 +1,87 @@
+<div class="scheduler-container">
+    <div class="glass-panel main-card">
+        <h1 class="title">Microlearning Scheduler 📅</h1>
+        <p class="subtitle">Turn your syllabus into a manageable daily plan.</p>
+
+        <!-- Loading State -->
+        <div class="loading-overlay" *ngIf="isProcessing$ | async">
+            <div class="loader"></div>
+            <p>Analyzing your syllabus and generating your personalized schedule... 🚀</p>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-section" *ngIf="!isGenerated && !(isProcessing$ | async)">
+            <form [formGroup]="schedulerForm" (ngSubmit)="generateSchedule()">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Exam Date</label>
+                        <input type="date" formControlName="examDate" class="modern-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Daily Study Hours</label>
+                        <input type="number" formControlName="dailyStudyHours" class="modern-input">
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <h3>Syllabus PDF</h3>
+                    <p class="upload-hint">Upload your syllabus PDF and our AI will break it down into daily tasks.</p>
+                    <div class="file-drop-zone" [class.has-file]="selectedFile">
+                        <input type="file" (change)="onFileSelected($event)" accept=".pdf" id="syllabusFile" hidden>
+                        <label for="syllabusFile" class="file-label">
+                            <span class="icon">📄</span>
+                            <span class="text">{{ selectedFile ? selectedFile.name : 'Click to upload Syllabus PDF'
+                                }}</span>
+                        </label>
+                    </div>
+                    <p class="error-msg" *ngIf="fileError">{{ fileError }}</p>
+                </div>
+
+                <button type="submit" [disabled]="!schedulerForm.valid || !selectedFile" class="btn-primary">Generate My
+                    Plan</button>
+            </form>
+        </div>
+
+        <!-- Schedule Display Section -->
+        <div class="schedule-section" *ngIf="isGenerated">
+            <div class="progress-banner">
+                <div class="progress-text">
+                    <span>Overall Progress</span>
+                    <span>{{ getProgress() }}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="getProgress()"></div>
+                </div>
+            </div>
+
+            <div class="days-grid">
+                <div *ngFor="let day of schedule" class="day-card" [class.revision-day]="day.isRevision">
+                    <div class="day-header">
+                        <span class="date">{{ day.date | date:'EEE, MMM d' }}</span>
+                        <span class="badge" *ngIf="day.isRevision">Revision</span>
+                    </div>
+
+                    <div class="topics-list" *ngIf="!day.isRevision">
+                        <div *ngFor="let topic of day.topics" class="topic-item">
+                            <label class="checkbox-container">
+                                <input type="checkbox" [checked]="topic.completed" (change)="toggleTopic(topic.id)">
+                                <span class="checkmark"></span>
+                                <span class="topic-name" [class.completed]="topic.completed">{{ topic.name }}</span>
+                            </label>
+                            <span class="time">{{ topic.estimatedHours }}h</span>
+                        </div>
+                        <div *ngIf="day.topics.length === 0" class="empty-msg">Relax! No new topics today.</div>
+                    </div>
+
+                    <div class="revision-content" *ngIf="day.isRevision">
+                        <p>Final review and mock tests.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button (click)="isGenerated = false" class="btn-outline">Edit Syllabus</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -19,6 +19,8 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { TeacherUploadComponent } from './features/upload-video-for-teachers/pages/upload.component';
 import { VideoClassComponent } from './features/video-class/pages/video-class.component';
 import { AuthHeaderInterceptor } from './core/interceptor/auth-header.interceptor';
+import { ReactiveFormsModule } from '@angular/forms';
+import { SchedulerComponent } from './features/microlearning-scheduler/pages/scheduler.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { AuthHeaderInterceptor } from './core/interceptor/auth-header.intercepto
     ProfileComponent,
     TeacherUploadComponent,
     VideoClassComponent,
-    MainLayoutComponent
+    MainLayoutComponent,
+    SchedulerComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +45,7 @@ import { AuthHeaderInterceptor } from './core/interceptor/auth-header.intercepto
     FormsModule,
     RouterModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     MarkdownModule.forRoot()
   ],
   providers: [{

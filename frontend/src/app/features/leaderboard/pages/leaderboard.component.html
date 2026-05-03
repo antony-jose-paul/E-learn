@@ -29,7 +29,7 @@
   </div>
 
   <div class="controls-section">
-    <div class="filters">
+    <!-- <div class="filters">
       <button
         *ngFor="let p of periods"
         (click)="setPeriod(p)"
@@ -37,7 +37,7 @@
         class="filter-btn">
         {{ p | titlecase }}
       </button>
-    </div>
+    </div> -->
     <div class="search-bar">
       <i class="fas fa-search"></i>
       <input
@@ -62,7 +62,7 @@
       <div>Rank</div>
       <div>Player</div>
       <div>XP Score</div>
-      <div>Trend</div>
+      <!-- <div>Trend</div> -->
     </div>
 
     <div class="rows-container">
@@ -80,11 +80,11 @@
         <div class="col-score">
           <div class="score-badge">{{ player.xp | number }}</div>
         </div>
-        <div class="col-trend">
+        <!-- <div class="col-trend">
           <span class="trend-icon" [ngClass]="getTrendClass(player.trend)">
             {{ getTrendIcon(player.trend) }}
           </span>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

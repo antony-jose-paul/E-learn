@@ -1,6 +1,10 @@
 /* ── Container ──────────────────────────────────────── */
 .chatbot-container {
+  display: flex;
+  flex-direction: column;
   max-width: 1200px;
+  height: calc(100vh - 120px);
+  min-height: 500px;
   margin: 20px auto;
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -35,8 +39,7 @@
 
 /* ── Messages list ──────────────────────────────────── */
 .messages {
-  min-height: 200px;
-  max-height: 500px;
+  flex: 1;
   overflow-y: auto;
   padding: 24px;
   display: flex;
@@ -200,11 +203,11 @@
     margin: 12px;
     padding: 16px;
     border-radius: 18px;
+    height: calc(100dvh - 100px);
   }
 
   .messages {
     padding: 16px;
-    max-height: 60vh;
   }
 
   /* Wider bubbles on small screens */

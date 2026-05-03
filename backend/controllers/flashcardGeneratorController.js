@@ -30,11 +30,31 @@ export const generateFlashcardsCore = async (noteId) => {
     const noteText = await extractTextFromPDF(absolutePdfPath);
     if (!noteText || noteText.trim().length === 0) throw new Error("Could not extract text from the note PDF.");
 
+    // console.log(noteText);
+    
+    const model = genai.getGenerativeModel({
+        model: 'gemini-2.5-flash',
+        systemInstruction: "You are an expert educator. Your output must be exactly a valid JSON object matching the requested structure.",
+        generationConfig: {
+            responseMimeType: "application/json",
+        }
+    });
+
+    // Limit total text to avoid extremely long processing times and token limits
+    // 40,000 characters is roughly 10,000 tokens, well within free tier limits for a single request
+    const MAX_TEXT_LENGTH = 40000; 
+    const textToProcess = noteText.substring(0, MAX_TEXT_LENGTH);
+    
     const prompt = `
-        You are an expert educator. Based on the following educational content, generate a set of flashcards.
+        You are an expert educator. The following text is the beginning of an educational document, which likely contains a Table of Contents or Index.
+        
+        First, scan the text to identify the Table of Contents/Index and extract the main topics, chapters, and themes listed.
+        Then, using your own extensive knowledge about these topics, generate a comprehensive set of flashcards that cover the entire scope of the document's subject matter.
+        
         Each flashcard should have a question, an answer, a difficulty level (easy, medium, or hard), and a category.
         
-        Return the output EXCLUSIVELY as a JSON object with a "flashcards" key containing an array of flashcard objects.
+        Return the output EXCLUSIVELY as a JSON object with a single "flashcards" key containing an array of flashcard objects.
+        
         Format:
         {
             "flashcards": [
@@ -44,16 +64,8 @@ export const generateFlashcardsCore = async (noteId) => {
         }
 
         Content:
-        ${noteText}
+        ${textToProcess}
     `;
-
-    const model = genai.getGenerativeModel({
-        model: 'gemini-2.5-flash',
-        systemInstruction: "You are an expert educator. Your output must be exactly a valid JSON object matching the requested structure.",
-        generationConfig: {
-            responseMimeType: "application/json",
-        }
-    });
 
     const result = await model.generateContent(prompt);
     let generatedText = result.response.text();
@@ -65,6 +77,10 @@ export const generateFlashcardsCore = async (noteId) => {
     }
 
     const { flashcards } = JSON.parse(generatedText);
+
+    if (!flashcards || flashcards.length === 0) {
+        throw new Error("Failed to generate any flashcards.");
+    }
 
     const deck = await FlashcardDeck.create({
         name: `${note.title} (Auto-generated)`,

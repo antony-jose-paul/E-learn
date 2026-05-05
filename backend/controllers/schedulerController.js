@@ -47,11 +47,13 @@ export const generateSchedule = async (req, res) => {
             return res.status(400).json({ message: "Could not extract text from the provided PDF." });
         }
 
+        const currentDate = new Date().toISOString();
         const prompt = `
             You are an expert educational planner. I need to create a microlearning schedule based on the following syllabus text.
-            The exam date is ${new Date(examDate).toISOString()} and the student can study for ${dailyStudyHours} hours per day.
+            The schedule must start from today (${currentDate}) and end on the exam date (${new Date(examDate).toISOString()}).
+            The student can study for ${dailyStudyHours} hours per day.
 
-            Please divide the syllabus topics into structured microlearning sessions. Consider the remaining days until the exam and the daily study limit.
+            Please divide the syllabus topics into structured microlearning sessions from today until the exam date. Consider the remaining days and the daily study limit.
             Reserve the last 15% of the total days (with a minimum of 1 day) entirely for revision.
 
             Return the output EXCLUSIVELY as a JSON array of daily plans (no markdown formatting, no comments, just the raw JSON).
@@ -73,7 +75,7 @@ export const generateSchedule = async (req, res) => {
         `;
 
         const model = genai.getGenerativeModel({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-flash-preview',
             systemInstruction: "You are an expert educational planner. Your output must be exactly a valid JSON array matching the requested structure, with no additional formatting or explanations.",
             generationConfig: {
                 responseMimeType: "application/json",

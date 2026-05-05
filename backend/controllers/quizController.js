@@ -144,7 +144,7 @@ const generateQuizFromAI = async (req, res) => {
         `;
 
         const model = genai.getGenerativeModel({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-3-flash-preview',
             systemInstruction: "You are an expert educational planner. Your output must be exactly a valid JSON array matching the requested structure, with no additional formatting or explanations.",
             generationConfig: {
                 responseMimeType: "application/json",

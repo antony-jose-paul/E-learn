@@ -26,7 +26,7 @@ export const chatWithAI = async (req, res) => {
         ])).flat();
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
+            model: "gemini-3-flash-preview",
             systemInstruction:
                 "You are the AI assistant for E-learn platform. You are helpful, kind, and intelligent. You only answer queries related to education and the E-learn platform. If a user asks about anything else, politely decline to answer and remind them of your purpose. The E-learn platform offers courses, quizzes, and a discussion forum.",
         });
@@ -74,7 +74,7 @@ export const summarizeText = async (req, res) => {
         }
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.5-flash",
+            model: "gemini-3-flash-preview",
             systemInstruction: "You are an expert summarizer. Provide a concise, structured, and easy-to-read summary for the provided transcription text. Focus only on the main points.",
         });
 

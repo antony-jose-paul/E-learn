@@ -31,9 +31,9 @@ export const generateFlashcardsCore = async (noteId) => {
     if (!noteText || noteText.trim().length === 0) throw new Error("Could not extract text from the note PDF.");
 
     // console.log(noteText);
-    
+
     const model = genai.getGenerativeModel({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         systemInstruction: "You are an expert educator. Your output must be exactly a valid JSON object matching the requested structure.",
         generationConfig: {
             responseMimeType: "application/json",
@@ -42,9 +42,9 @@ export const generateFlashcardsCore = async (noteId) => {
 
     // Limit total text to avoid extremely long processing times and token limits
     // 40,000 characters is roughly 10,000 tokens, well within free tier limits for a single request
-    const MAX_TEXT_LENGTH = 40000; 
+    const MAX_TEXT_LENGTH = 40000;
     const textToProcess = noteText.substring(0, MAX_TEXT_LENGTH);
-    
+
     const prompt = `
         You are an expert educator. The following text is the beginning of an educational document, which likely contains a Table of Contents or Index.
         
@@ -104,8 +104,8 @@ export const generateFlashcardsFromNote = async (req, res) => {
     try {
         const { noteId } = req.params;
         const result = await generateFlashcardsCore(noteId);
-        res.status(201).json({ 
-            message: "Flashcards generated successfully", 
+        res.status(201).json({
+            message: "Flashcards generated successfully",
             ...result
         });
     } catch (error) {
